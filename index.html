@@ -566,7 +566,13 @@ body::before {
       </div>
 
       <div class="field" data-required="true">
-        <label>Pais y ciudad <span class="required">*</span></label>
+        <label>Número de teléfono (con código de país) <span class="required">*</span></label>
+        <input type="tel" name="telefono" placeholder="Ej: +56 9 1234 5678" autocomplete="tel">
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="field" data-required="true">
+        <label>País y ciudad <span class="required">*</span></label>
         <input type="text" name="ubicacion" placeholder="Ej: Chile, Santiago">
         <div class="error-msg">Este campo es obligatorio</div>
       </div>
@@ -805,7 +811,7 @@ body::before {
   <div class="result-page" id="resultNotQualified">
     <div class="result-icon">&#128170;</div>
     <h2>No calza aun</h2>
-    <p>Por ahora Imperio Agéntico es para negocios en una etapa especifica. Quedate en Imperio Digital, aplica lo que hay y te avisamos cuando estes listo.</p>
+    <p>Por ahora Imperio Agéntico es para negocios en una etapa especifica. Quedate en <a href="https://skool.com/imperio-digital" target="_blank" style="color: var(--gold); text-decoration: underline;">Imperio Digital</a>, aplica lo que hay y te avisamos cuando estes listo.</p>
     <a href="https://skool.com/imperio-digital" target="_blank" class="btn-result btn-outline">Ir a Imperio Digital</a>
     <div class="summary-box" id="summaryNotQualified"></div>
     <button class="btn-copy" onclick="copySummary()">Copiar resumen</button>
@@ -934,6 +940,7 @@ body::before {
     const labels = {
       nombre: 'Nombre',
       email: 'Email',
+      telefono: 'Teléfono',
       ubicacion: 'Ubicacion',
       negocio: 'Negocio',
       que_vendes: 'Que vende',
@@ -985,13 +992,33 @@ body::before {
     setTimeout(() => { container.innerHTML = ''; }, 5000);
   }
 
-  function sendToFormspree(data) {
-    // Build a readable body
-    const body = Object.entries(data).map(([k,v]) => k + ': ' + v).join('\n');
-    fetch('https://formspree.io/f/PLACEHOLDER', {
+  function sendToGoogleSheets(data) {
+    const SHEET_WEBHOOK = 'GOOGLE_APPS_SCRIPT_URL_PLACEHOLDER';
+    fetch(SHEET_WEBHOOK, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ ...data, _subject: 'Nueva aplicacion - Imperio Agéntico: ' + (data.nombre || '') })
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        timestamp: new Date().toISOString(),
+        nombre: data.nombre || '',
+        email: data.email || '',
+        telefono: data.telefono || '',
+        ubicacion: data.ubicacion || '',
+        negocio: data.negocio || '',
+        que_vendes: data.que_vendes || '',
+        facturacion: data.facturacion || '',
+        oferta_validada: data.oferta_validada || '',
+        equipo: data.equipo || '',
+        dueno_sistemas: data.dueno_sistemas || '',
+        herramientas: data.herramientas || '',
+        cuello_botella: data.cuello_botella || '',
+        area_automatizar: data.area_automatizar || '',
+        horas_semana: data.horas_semana || '',
+        inversion: data.inversion || '',
+        decision: data.decision || '',
+        por_que_ahora: data.por_que_ahora || '',
+        calificado: data._calificado ? 'SI' : 'NO'
+      })
     }).catch(function(){});
   }
 
@@ -1009,8 +1036,9 @@ body::before {
     if (!validateBlock(currentBlock)) return;
 
     const data = getFormData();
+    data._calificado = isQualified(data);
     saveToLocalStorage();
-    sendToFormspree(data);
+    sendToGoogleSheets(data);
 
     const summary = buildSummary(data);
 

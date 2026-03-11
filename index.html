@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicar a Imperio Agéntico - Inner Circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0a;
+  --bg-card: #111111;
+  --bg-input: #1a1a1a;
+  --gold: #D4AF37;
+  --gold-dim: #b8962e;
+  --gold-glow: rgba(212, 175, 55, 0.15);
+  --text: #ffffff;
+  --text-muted: #999999;
+  --text-dim: #666666;
+  --border: #2a2a2a;
+  --error: #ff4d4d;
+  --success: #4dff88;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background subtle pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.03) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 48px 0 40px;
+}
+
+.header-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  background: var(--gold-glow);
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #fff 30%, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Progress Bar */
+.progress-container {
+  margin-bottom: 40px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  padding: 16px 0;
+  z-index: 10;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: color 0.4s ease;
+}
+
+.progress-step.active { color: var(--gold); }
+.progress-step.done { color: var(--text-muted); }
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+}
+
+.progress-step.active .step-number {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: #0a0a0a;
+}
+
+.progress-step.done .step-number {
+  border-color: var(--gold-dim);
+  background: transparent;
+  color: var(--gold-dim);
+}
+
+.step-label { display: none; }
+
+@media (min-width: 520px) {
+  .step-label { display: inline; }
+}
+
+.progress-bar-track {
+  height: 3px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+/* Form Blocks */
+.form-block {
+  display: none;
+  animation: fadeSlideIn 0.4s ease forwards;
+}
+
+.form-block.active { display: block; }
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.block-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.block-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+
+/* Form Fields */
+.field {
+  margin-bottom: 28px;
+}
+
+.field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.field label .required {
+  color: var(--gold);
+  margin-left: 2px;
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-dim);
+}
+
+/* Radio Groups */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radio-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-option input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio-option .radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.radio-option .radio-label:hover {
+  border-color: #444;
+}
+
+.radio-option input:checked + .radio-label {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+
+.radio-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.radio-option input:checked + .radio-label .radio-dot {
+  border-color: var(--gold);
+}
+
+.radio-option input:checked + .radio-label .radio-dot::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+.btn {
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+}
+
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.btn-back:hover {
+  border-color: #555;
+  color: var(--text);
+}
+
+.btn-next, .btn-submit {
+  flex: 1;
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+  color: #0a0a0a;
+  font-weight: 700;
+}
+
+.btn-next:hover, .btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-next:active, .btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Validation Error */
+.field.error input,
+.field.error textarea {
+  border-color: var(--error);
+}
+
+.field.error .radio-group {
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--error);
+}
+
+.error-msg {
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 6px;
+  display: none;
+}
+
+.field.error .error-msg { display: block; }
+
+/* Result Pages */
+.result-page {
+  display: none;
+  text-align: center;
+  padding: 60px 0;
+  animation: fadeSlideIn 0.6s ease forwards;
+}
+
+.result-page.active { display: block; }
+
+.result-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.result-page h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.result-page p {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 440px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+
+.btn-result {
+  display: inline-block;
+  padding: 16px 40px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+  color: #0a0a0a;
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(212, 175, 55, 0.35);
+}
+
+.btn-outline {
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Summary Box */
+.summary-box {
+  text-align: left;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.summary-box strong { color: var(--text); }
+
+.btn-copy {
+  display: inline-block;
+  padding: 10px 24px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 24px;
+}
+
+.btn-copy:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+  animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 40px 0 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.footer a {
+  color: var(--gold-dim);
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header" id="header">
+    <div class="header-badge">Aplicaciones Abiertas</div>
+    <h1>Imperio Agéntico<br>Inner Circle</h1>
+    <p>Montamos tu equipo de agentes IA y lo dejamos produciendo clientes en 90 dias. Solo para fundadores serios.</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-steps">
+      <div class="progress-step active" data-step="1">
+        <span class="step-number">1</span>
+        <span class="step-label">Datos</span>
+      </div>
+      <div class="progress-step" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">Negocio</span>
+      </div>
+      <div class="progress-step" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">Sistemas</span>
+      </div>
+      <div class="progress-step" data-step="4">
+        <span class="step-number">4</span>
+        <span class="step-label">Compromiso</span>
+      </div>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form id="appForm" novalidate>
+
+    <!-- BLOCK 1: Datos basicos -->
+    <div class="form-block active" data-block="1">
+      <div class="block-title">Datos basicos</div>
+      <div class="block-subtitle">Cuentanos sobre ti para conocerte mejor.</div>
+
+      <div class="field" data-required="true">
+        <label>Nombre y apellido <span class="required">*</span></label>
+        <input type="text" name="nombre" placeholder="Ej: Maria Lopez" autocomplete="name">
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="field" data-required="true" data-type="email">
+        <label>Email de trabajo <span class="required">*</span></label>
+        <input type="email" name="email" placeholder="tu@empresa.com" autocomplete="email">
+        <div class="error-msg">Ingresa un email valido</div>
+      </div>
+
+      <div class="field" data-required="true">
+        <label>Pais y ciudad <span class="required">*</span></label>
+        <input type="text" name="ubicacion" placeholder="Ej: Chile, Santiago">
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="field" data-required="true">
+        <label>Nombre de tu negocio + sitio web o Instagram <span class="required">*</span></label>
+        <input type="text" name="negocio" placeholder="Ej: Acme Agency - acme.com / @acme.agency">
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-next" onclick="nextBlock()">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- BLOCK 2: Situacion del negocio -->
+    <div class="form-block" data-block="2">
+      <div class="block-title">Situacion del negocio</div>
+      <div class="block-subtitle">Necesitamos entender donde estas hoy.</div>
+
+      <div class="field" data-required="true">
+        <label>Que vendes hoy? Explicalo en una frase <span class="required">*</span></label>
+        <textarea name="que_vendes" placeholder="Ej: Servicio de automatizacion para agencias de marketing"></textarea>
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Facturacion promedio ultimos 3 meses (USD/mes) <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="facturacion" value="Menos de $10k/mes">
+            <span class="radio-label"><span class="radio-dot"></span>Menos de $10k/mes</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="facturacion" value="$10k-$30k/mes">
+            <span class="radio-label"><span class="radio-dot"></span>$10k-$30k/mes</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="facturacion" value="$30k-$70k/mes">
+            <span class="radio-label"><span class="radio-dot"></span>$30k-$70k/mes</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="facturacion" value="Mas de $70k/mes">
+            <span class="radio-label"><span class="radio-dot"></span>Mas de $70k/mes</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Tienes oferta principal validada (clientes que pagan recurrente)? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="oferta_validada" value="Si">
+            <span class="radio-label"><span class="radio-dot"></span>Si</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="oferta_validada" value="No / estoy probando">
+            <span class="radio-label"><span class="radio-dot"></span>No / estoy probando</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Equipo actual <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="equipo" value="Trabajo solo">
+            <span class="radio-label"><span class="radio-dot"></span>Trabajo solo</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="equipo" value="1-3 personas">
+            <span class="radio-label"><span class="radio-dot"></span>1-3 personas</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="equipo" value="4-10 personas">
+            <span class="radio-label"><span class="radio-dot"></span>4-10 personas</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="equipo" value="10+ personas">
+            <span class="radio-label"><span class="radio-dot"></span>10+ personas</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-back" onclick="prevBlock()">Atras</button>
+        <button type="button" class="btn btn-next" onclick="nextBlock()">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- BLOCK 3: Sistemas y cuello de botella -->
+    <div class="form-block" data-block="3">
+      <div class="block-title">Sistemas y cuello de botella</div>
+      <div class="block-subtitle">Donde duele mas y donde los agentes pueden ayudar.</div>
+
+      <div class="field" data-required="true">
+        <label>Quien seria el "dueno de sistemas" interno? Nombre y rol <span class="required">*</span></label>
+        <input type="text" name="dueno_sistemas" placeholder="Ej: Carlos, COO / Yo mismo">
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="field">
+        <label>Que herramientas usas hoy para operar y vender?</label>
+        <textarea name="herramientas" placeholder="Ej: HubSpot, Slack, Notion, Make, Calendly..."></textarea>
+      </div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Donde sientes mas cuello de botella? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="cuello_botella" value="Generar leads / reuniones">
+            <span class="radio-label"><span class="radio-dot"></span>Generar leads / reuniones</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="cuello_botella" value="Cerrar ventas">
+            <span class="radio-label"><span class="radio-dot"></span>Cerrar ventas</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="cuello_botella" value="Entregar el servicio / fulfillment">
+            <span class="radio-label"><span class="radio-dot"></span>Entregar el servicio / fulfillment</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="cuello_botella" value="Operaciones y soporte / tareas manuales">
+            <span class="radio-label"><span class="radio-dot"></span>Operaciones y soporte / tareas manuales</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="cuello_botella" value="Otro">
+            <span class="radio-label"><span class="radio-dot"></span>Otro</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="field" data-required="true">
+        <label>Si en 90 dias solo pudieramos automatizar 1 area, cual seria y por que? <span class="required">*</span></label>
+        <textarea name="area_automatizar" placeholder="Se especifico. Ej: Follow-up de leads porque perdemos el 60% por no responder a tiempo."></textarea>
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-back" onclick="prevBlock()">Atras</button>
+        <button type="button" class="btn btn-next" onclick="nextBlock()">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- BLOCK 4: Compromiso -->
+    <div class="form-block" data-block="4">
+      <div class="block-title">Compromiso</div>
+      <div class="block-subtitle">Esto funciona si ambas partes se comprometen. Se directo.</div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Horas/semana que puedes dedicar los proximos 90 dias <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="horas_semana" value="Menos de 2 horas/semana">
+            <span class="radio-label"><span class="radio-dot"></span>Menos de 2 horas/semana</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="horas_semana" value="2-4 horas/semana">
+            <span class="radio-label"><span class="radio-dot"></span>2-4 horas/semana</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="horas_semana" value="5-8 horas/semana">
+            <span class="radio-label"><span class="radio-dot"></span>5-8 horas/semana</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="horas_semana" value="9+ horas/semana">
+            <span class="radio-label"><span class="radio-dot"></span>9+ horas/semana</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Estas dispuesto a invertir desde $1,500 USD/mes durante minimo 6 meses? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="inversion" value="Si, tengo el capital o acceso al capital">
+            <span class="radio-label"><span class="radio-dot"></span>Si, tengo el capital o acceso al capital</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="inversion" value="No, no estoy en posicion de invertir eso">
+            <span class="radio-label"><span class="radio-dot"></span>No, no estoy en posicion de invertir eso</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="field" data-required="true" data-type="radio">
+        <label>Quien toma la decision final de inversion? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="decision" value="Yo solo">
+            <span class="radio-label"><span class="radio-dot"></span>Yo solo</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="decision" value="Yo con socio">
+            <span class="radio-label"><span class="radio-dot"></span>Yo con socio</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="decision" value="Otro">
+            <span class="radio-label"><span class="radio-dot"></span>Otro</span>
+          </label>
+        </div>
+        <div class="error-msg">Selecciona una opcion</div>
+      </div>
+
+      <div class="field" data-required="true">
+        <label>Por que quieres entrar a Imperio Agéntico justo ahora y no hace 6 meses? <span class="required">*</span></label>
+        <textarea name="por_que_ahora" placeholder="Se honesto. No hay respuesta incorrecta."></textarea>
+        <div class="error-msg">Este campo es obligatorio</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-back" onclick="prevBlock()">Atras</button>
+        <button type="button" class="btn btn-submit" onclick="submitForm()">Enviar aplicacion</button>
+      </div>
+    </div>
+
+  </form>
+
+  <!-- Result: Qualified -->
+  <div class="result-page" id="resultQualified">
+    <div class="result-icon">&#127941;</div>
+    <h2>Aplicacion enviada</h2>
+    <p>Tu perfil calza. Agenda una llamada con Ben para definir tu plan de 90 dias.</p>
+    <a href="https://calendly.com/becord00/imperio-agentico" target="_blank" class="btn-result btn-gold">Agendar llamada</a>
+    <div class="summary-box" id="summaryQualified"></div>
+    <button class="btn-copy" onclick="copySummary()">Copiar resumen</button>
+  </div>
+
+  <!-- Result: Not Qualified -->
+  <div class="result-page" id="resultNotQualified">
+    <div class="result-icon">&#128170;</div>
+    <h2>No calza aun</h2>
+    <p>Por ahora Imperio Agéntico es para negocios en una etapa especifica. Quedate en Imperio Digital, aplica lo que hay y te avisamos cuando estes listo.</p>
+    <a href="https://skool.com/imperio-digital" target="_blank" class="btn-result btn-outline">Ir a Imperio Digital</a>
+    <div class="summary-box" id="summaryNotQualified"></div>
+    <button class="btn-copy" onclick="copySummary()">Copiar resumen</button>
+  </div>
+
+  <div class="footer">
+    <p>Imperio Agéntico by <a href="https://skool.com/imperio-digital" target="_blank">Imperio Digital</a></p>
+  </div>
+</div>
+
+<!-- Confetti Container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+(function() {
+  let currentBlock = 1;
+  const totalBlocks = 4;
+
+  function updateProgress() {
+    const fill = document.getElementById('progressFill');
+    const pct = ((currentBlock - 1) / (totalBlocks - 1)) * 100;
+    fill.style.width = pct + '%';
+
+    document.querySelectorAll('.progress-step').forEach(step => {
+      const s = parseInt(step.dataset.step);
+      step.classList.remove('active', 'done');
+      if (s === currentBlock) step.classList.add('active');
+      else if (s < currentBlock) step.classList.add('done');
+    });
+  }
+
+  function showBlock(n) {
+    document.querySelectorAll('.form-block').forEach(b => b.classList.remove('active'));
+    const target = document.querySelector('.form-block[data-block="' + n + '"]');
+    if (target) {
+      target.classList.remove('active');
+      // Force re-trigger animation
+      void target.offsetWidth;
+      target.classList.add('active');
+    }
+    currentBlock = n;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    saveToLocalStorage();
+  }
+
+  function validateBlock(n) {
+    const block = document.querySelector('.form-block[data-block="' + n + '"]');
+    const fields = block.querySelectorAll('.field[data-required="true"]');
+    let valid = true;
+
+    fields.forEach(field => {
+      field.classList.remove('error');
+      const type = field.dataset.type;
+
+      if (type === 'radio') {
+        const name = field.querySelector('input[type="radio"]').name;
+        const checked = field.querySelector('input[type="radio"]:checked');
+        if (!checked) {
+          field.classList.add('error');
+          valid = false;
+        }
+      } else if (type === 'email') {
+        const input = field.querySelector('input');
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!input.value.trim() || !emailRe.test(input.value.trim())) {
+          field.classList.add('error');
+          valid = false;
+        }
+      } else {
+        const input = field.querySelector('input, textarea');
+        if (input && !input.value.trim()) {
+          field.classList.add('error');
+          valid = false;
+        }
+      }
+    });
+
+    return valid;
+  }
+
+  function getFormData() {
+    const form = document.getElementById('appForm');
+    const data = {};
+    form.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
+      if (el.name) data[el.name] = el.value.trim();
+    });
+    form.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+      data[el.name] = el.value;
+    });
+    return data;
+  }
+
+  function saveToLocalStorage() {
+    try {
+      const data = getFormData();
+      data._currentBlock = currentBlock;
+      data._timestamp = new Date().toISOString();
+      localStorage.setItem('imperio_agentico_app', JSON.stringify(data));
+    } catch(e) {}
+  }
+
+  function loadFromLocalStorage() {
+    try {
+      const saved = localStorage.getItem('imperio_agentico_app');
+      if (!saved) return;
+      const data = JSON.parse(saved);
+      const form = document.getElementById('appForm');
+
+      Object.keys(data).forEach(key => {
+        if (key.startsWith('_')) return;
+        const input = form.querySelector('[name="' + key + '"]');
+        if (!input) return;
+
+        if (input.type === 'radio') {
+          const radio = form.querySelector('input[name="' + key + '"][value="' + data[key] + '"]');
+          if (radio) radio.checked = true;
+        } else {
+          input.value = data[key];
+        }
+      });
+    } catch(e) {}
+  }
+
+  function buildSummary(data) {
+    const labels = {
+      nombre: 'Nombre',
+      email: 'Email',
+      ubicacion: 'Ubicacion',
+      negocio: 'Negocio',
+      que_vendes: 'Que vende',
+      facturacion: 'Facturacion',
+      oferta_validada: 'Oferta validada',
+      equipo: 'Equipo',
+      dueno_sistemas: 'Dueno de sistemas',
+      herramientas: 'Herramientas',
+      cuello_botella: 'Cuello de botella',
+      area_automatizar: 'Area a automatizar',
+      horas_semana: 'Horas/semana',
+      inversion: 'Inversion',
+      decision: 'Decision',
+      por_que_ahora: 'Por que ahora'
+    };
+
+    let html = '';
+    for (const [key, label] of Object.entries(labels)) {
+      if (data[key]) {
+        html += '<strong>' + label + ':</strong> ' + data[key] + '<br>';
+      }
+    }
+    return html;
+  }
+
+  function isQualified(data) {
+    const facOk = data.facturacion && data.facturacion !== 'Menos de $10k/mes';
+    const ofertaOk = data.oferta_validada === 'Si';
+    const horasOk = data.horas_semana && data.horas_semana !== 'Menos de 2 horas/semana';
+    const inversionOk = data.inversion === 'Si, tengo el capital o acceso al capital';
+    return facOk && ofertaOk && horasOk && inversionOk;
+  }
+
+  function launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#D4AF37', '#FFD700', '#fff', '#b8962e', '#e6c84b'];
+    for (let i = 0; i < 60; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (Math.random() * 8 + 4) + 'px';
+      piece.style.height = (Math.random() * 8 + 4) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.animationDelay = (Math.random() * 1.5) + 's';
+      piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      container.appendChild(piece);
+    }
+    setTimeout(() => { container.innerHTML = ''; }, 5000);
+  }
+
+  function sendToFormspree(data) {
+    // Build a readable body
+    const body = Object.entries(data).map(([k,v]) => k + ': ' + v).join('\n');
+    fetch('https://formspree.io/f/PLACEHOLDER', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ ...data, _subject: 'Nueva aplicacion - Imperio Agéntico: ' + (data.nombre || '') })
+    }).catch(function(){});
+  }
+
+  // Expose globally
+  window.nextBlock = function() {
+    if (!validateBlock(currentBlock)) return;
+    if (currentBlock < totalBlocks) showBlock(currentBlock + 1);
+  };
+
+  window.prevBlock = function() {
+    if (currentBlock > 1) showBlock(currentBlock - 1);
+  };
+
+  window.submitForm = function() {
+    if (!validateBlock(currentBlock)) return;
+
+    const data = getFormData();
+    saveToLocalStorage();
+    sendToFormspree(data);
+
+    const summary = buildSummary(data);
+
+    // Hide form + progress
+    document.getElementById('appForm').style.display = 'none';
+    document.getElementById('progressContainer').style.display = 'none';
+    document.getElementById('header').style.display = 'none';
+
+    if (isQualified(data)) {
+      document.getElementById('summaryQualified').innerHTML = summary;
+      document.getElementById('resultQualified').classList.add('active');
+      launchConfetti();
+    } else {
+      document.getElementById('summaryNotQualified').innerHTML = summary;
+      document.getElementById('resultNotQualified').classList.add('active');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.copySummary = function() {
+    const box = document.querySelector('.result-page.active .summary-box');
+    if (!box) return;
+    const text = box.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.result-page.active .btn-copy');
+      const orig = btn.textContent;
+      btn.textContent = 'Copiado!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    });
+  };
+
+  // Clear errors on input
+  document.addEventListener('input', function(e) {
+    const field = e.target.closest('.field');
+    if (field) field.classList.remove('error');
+  });
+
+  document.addEventListener('change', function(e) {
+    const field = e.target.closest('.field');
+    if (field) field.classList.remove('error');
+  });
+
+  // Init
+  loadFromLocalStorage();
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>

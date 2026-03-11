@@ -969,9 +969,8 @@ body::before {
   function isQualified(data) {
     const facOk = data.facturacion && data.facturacion !== 'Menos de $10k/mes';
     const ofertaOk = data.oferta_validada === 'Si';
-    const horasOk = data.horas_semana && data.horas_semana !== 'Menos de 2 horas/semana';
     const inversionOk = data.inversion === 'Si, tengo el capital o acceso al capital';
-    return facOk && ofertaOk && horasOk && inversionOk;
+    return facOk && ofertaOk && inversionOk;
   }
 
   function launchConfetti() {

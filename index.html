@@ -1002,7 +1002,7 @@ body::before {
         timestamp: new Date().toISOString(),
         nombre: data.nombre || '',
         email: data.email || '',
-        telefono: data.telefono || '',
+        telefono: "'" + (data.telefono || ''),
         ubicacion: data.ubicacion || '',
         negocio: data.negocio || '',
         que_vendes: data.que_vendes || '',
